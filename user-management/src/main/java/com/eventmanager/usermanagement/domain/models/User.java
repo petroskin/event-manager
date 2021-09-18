@@ -15,6 +15,7 @@ public class User extends AbstractEntity<UserId>
     private String surname;
     private String email;
     private String password;
+    private Integer organizations;
 
     protected User()
     {
@@ -23,9 +24,21 @@ public class User extends AbstractEntity<UserId>
 
     public User(String name, String surname, String email, String password)
     {
+        super(UserId.randomId(UserId.class));
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.password = password;
+        this.organizations = 0;
+    }
+
+    public void joinedOrganization()
+    {
+        organizations++;
+    }
+
+    public void leftOrganization()
+    {
+        organizations--;
     }
 }

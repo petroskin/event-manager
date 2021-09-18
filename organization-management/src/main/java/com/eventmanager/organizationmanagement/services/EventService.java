@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface EventService
 {
-    EventId registerEvent(EventForm form);
-    void deleteEvent(EventId id);
+    EventId registerEvent(EventForm form, UserId userId);
+    void deleteEvent(EventId id, UserId userId);
     Collection<Event> findAll();
     Optional<Event> findById(EventId id);
     void registerParticipant(EventId eventId, UserId userId);

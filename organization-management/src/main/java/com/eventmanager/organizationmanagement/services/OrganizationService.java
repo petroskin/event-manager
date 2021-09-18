@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface OrganizationService
 {
     OrganizationId registerOrganization(OrganizationForm form);
-    void deleteOrganization(OrganizationId id);
+    void deleteOrganization(OrganizationId id, UserId userId);
     Collection<Organization> findAll();
     Optional<Organization> findById(OrganizationId id);
     void join(OrganizationId organizationId, UserId userId);

@@ -1,11 +1,13 @@
 package com.eventmanager.organizationmanagement.domain.valueobjects;
 
 import com.eventmanager.sharedkernel.domain.base.DomainObjectId;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 import javax.persistence.Embeddable;
 
 @Embeddable
+@EqualsAndHashCode
 public class UserId extends DomainObjectId
 {
     protected UserId()

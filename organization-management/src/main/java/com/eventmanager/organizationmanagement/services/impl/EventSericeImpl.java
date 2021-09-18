@@ -1,9 +1,12 @@
 package com.eventmanager.organizationmanagement.services.impl;
 
 import com.eventmanager.organizationmanagement.domain.exceptions.EventIdNotExistException;
+import com.eventmanager.organizationmanagement.domain.exceptions.OrganizationIdNotExistException;
+import com.eventmanager.organizationmanagement.domain.exceptions.UserIsNotOwnerException;
 import com.eventmanager.organizationmanagement.domain.models.Event;
 import com.eventmanager.organizationmanagement.domain.models.EventId;
 import com.eventmanager.organizationmanagement.domain.models.Organization;
+import com.eventmanager.organizationmanagement.domain.models.OrganizationId;
 import com.eventmanager.organizationmanagement.domain.repository.EventRepository;
 import com.eventmanager.organizationmanagement.domain.valueobjects.UserId;
 import com.eventmanager.organizationmanagement.services.EventService;
@@ -29,21 +32,27 @@ public class EventSericeImpl implements EventService
     private final Validator validator;
 
     @Override
-    public EventId registerEvent(EventForm form)
+    public EventId registerEvent(EventForm form, UserId userId)
     {
         Objects.requireNonNull(form, "Event must not be null");
         var constraintViolations = validator.validate(form);
         if (constraintViolations.size() > 0)
             throw new ConstraintViolationException("The form is not valid", constraintViolations);
+        if (!form.getOrganization().getOwnerId().equals(userId))
+            throw new UserIsNotOwnerException();
         Event newEvent = eventRepository.saveAndFlush(toDomainObject(form));
         return newEvent.getId();
     }
 
     @Override
-    public void deleteEvent(EventId id)
+    public void deleteEvent(EventId id, UserId userId)
     {
         Optional<Event> event = eventRepository.findById(id);
-        event.ifPresent(eventRepository::delete);
+        if (!event.isPresent())
+            throw new EventIdNotExistException(id);
+        if (!event.get().getOrganization().getOwnerId().equals(userId))
+            throw new UserIsNotOwnerException();
+        eventRepository.delete(event.get());
     }
 
     @Override

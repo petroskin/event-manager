@@ -70,4 +70,16 @@ public class Organization extends AbstractEntity<OrganizationId>
         Objects.requireNonNull(id, "User ID must not be null");
         invitedIdsSet.remove(id);
     }
+
+    public boolean isMember(@NonNull UserId id)
+    {
+        Objects.requireNonNull(id, "User ID must not be null");
+        return memberIdsSet.contains(id);
+    }
+
+    public boolean isInvited(@NonNull UserId id)
+    {
+        Objects.requireNonNull(id, "User ID must not be null");
+        return invitedIdsSet.contains(id);
+    }
 }

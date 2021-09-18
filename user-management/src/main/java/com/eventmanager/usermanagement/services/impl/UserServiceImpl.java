@@ -1,5 +1,7 @@
 package com.eventmanager.usermanagement.services.impl;
 
+import com.eventmanager.usermanagement.domain.exceptions.EmailTakenException;
+import com.eventmanager.usermanagement.domain.exceptions.UserNotFoundException;
 import com.eventmanager.usermanagement.domain.models.User;
 import com.eventmanager.usermanagement.domain.models.UserId;
 import com.eventmanager.usermanagement.domain.repository.UserRepository;
@@ -33,6 +35,8 @@ public class UserServiceImpl implements UserService
         var constraintViolations = validator.validate(registerForm);
         if (constraintViolations.size() > 0)
             throw new ConstraintViolationException("The form is not valid", constraintViolations);
+        if (userRepository.findByEmail(registerForm.getEmail()).isPresent())
+            throw new EmailTakenException();
         User newUser = userRepository.saveAndFlush(toDomainObject(registerForm));
         return newUser.getId();
     }
@@ -53,6 +57,22 @@ public class UserServiceImpl implements UserService
     public Optional<User> findByEmail(String email)
     {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public void joinedOrganization(UserId id)
+    {
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        user.joinedOrganization();
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void leftOrganization(UserId id)
+    {
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        user.leftOrganization();
+        userRepository.saveAndFlush(user);
     }
 
     @Override

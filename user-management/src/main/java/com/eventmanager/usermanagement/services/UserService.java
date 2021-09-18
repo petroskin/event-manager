@@ -14,4 +14,6 @@ public interface UserService extends UserDetailsService
     Collection<User> findAll();
     Optional<User> findById(UserId id);
     Optional<User> findByEmail(String email);
+    void joinedOrganization(UserId id);
+    void leftOrganization(UserId id);
 }
